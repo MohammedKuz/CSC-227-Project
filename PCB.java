@@ -1,7 +1,7 @@
 //GL
 public class PCB {
 
-    //Initializations
+    
     private int PID; //Process ID
     private String PState; //Process State 
     private int PCounter; //Process Counter (not sure)
