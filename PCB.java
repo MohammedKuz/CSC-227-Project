@@ -11,7 +11,6 @@ public class PCB {
     //Counter attributes
     private int cpuCounter;
     private int ioCounter;
-    private int cpuCounter;
     
     //Time attributes
     public int numOfInstructions;
