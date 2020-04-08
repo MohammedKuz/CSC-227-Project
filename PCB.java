@@ -8,6 +8,11 @@ public class PCB {
     private double PrSize; //Programe Size
     private double execTime; //Expected Excution Time
     
+    //Counter attributes
+    private int cpuCounter;
+    private int ioCounter;
+    private int cpuCounter;
+    
     //Time attributes
     public int numOfInstructions;
     public int IOTime;
