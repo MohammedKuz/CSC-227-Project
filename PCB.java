@@ -24,6 +24,20 @@ public class PCB {
         //Missing somethings
     }
 
+    public void killProcess(){
+
+    }
+
+    public void terminateProcess(){
+
+    }
+
+    public void  letProcessWait(){
+
+    }
+
+    
+
     //Setters and Getters 
     public String getPState(){
         return this.PState;
