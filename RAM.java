@@ -24,7 +24,6 @@ public class RAM {
     public boolean addProcess(PCB process){
         if (canAdd(process.size)){
             readyQueue.enqueue(process, process.burstTime);
-            process.newState(State.READY);
             currentRamUsed += process.size;
             return true;
         } else {
