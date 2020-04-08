@@ -24,7 +24,7 @@ public class PriorityQueue<T,P> {
                 if(tmp.priority < current.priority){
                     currentPrev.next = tmp;
                     tmp.next = current;
-                    size++
+                    size++;
                     return;
                 } else {
                     currentPrev = current;

@@ -11,6 +11,7 @@ public class PCB {
     //Counter attributes
     private int cpuCounter;
     private int ioCounter;
+    private int memoryCounter;
     
     //Time attributes
     public int numOfInstructions;
@@ -25,19 +26,39 @@ public class PCB {
         this.PState = "new";
         this.cpuBound = false;
         this.PrSize = Math.random() * (204800 - 5120 + 1) + 5120; //(not sure)
+        this.cpuCounter = 0;
+        this.ioCounter = 0;
+        this.memoryCounter = 0;
         //Missing somethings
     }
 
     public void killProcess(){
-
+        
+        
+        this.setPState("KILLED");
+        //Subtract from RAM usage
+        
+        
     }
 
     public void terminateProcess(){
+        this.PState = "TERMINATED";
+        //Stop all clocks
 
     }
 
     public void  letProcessWait(){
-
+        this.setPState("WAITING");
+        //Subtract from RAM usage
+        //Add to job Queue
+        this.memoryCounter++;
+        
+    }
+    
+    public void letProcessReady(){
+        this.setPState("READY");
+        //Add to RAM usage
+        
     }
 
     
