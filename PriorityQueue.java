@@ -32,8 +32,7 @@ public class PriorityQueue<T,P> {
                 }
             }
             currentPrev.next = tmp;
-            size++
-
+            size++;
         }
     }
 
