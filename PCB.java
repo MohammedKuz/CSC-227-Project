@@ -75,6 +75,9 @@ public class PCB {
     //Setters and Getters 
     public int getPID(){  return PID;  }
 
+    public void setPState(PStates PState){
+        this.PState = PState;
+    }
     public PStates getPState(){  return this.PState;  }
 
     public int getPrgSize() {  return this.PrgSize;  }
