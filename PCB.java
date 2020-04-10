@@ -1,6 +1,7 @@
 //GL
 public class PCB {
 
+ 
     private int PID; //Process ID
     private PStates PState; //Process state 
     private int PrgSize; //Programe size in MB
