@@ -22,10 +22,9 @@ public class RAM {
 
 
     public boolean addProcess(PCB process){
-        if (canAdd(process.size)){
+        if (canAdd(process.getPrgSize())){
             readyQueue.enqueue(process, process.burstTime);
-            process.newState(State.READY);
-            currentRamUsed += process.size;
+            currentRamUsed += process.getPrgSize();
             return true;
         } else {
             // can we add waiting queue ?
@@ -36,7 +35,7 @@ public class RAM {
     public PCB serveProcess(){
         if (currentRamUsed != 0){
             PCB process = readyQueue.serve().data;
-            currentRamUsed -= process.size;
+            currentRamUsed -= process.getPrgSize();
 
             return process;
         } else {
