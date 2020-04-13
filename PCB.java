@@ -1,10 +1,13 @@
+import java.util.LinkedList;
+
 //GL
 public class PCB {
 
  
     private int PID; //Process ID
     private PStates PState; //Process state 
-    private int PrgSize; //Programe size in MB
+    //private int PrgSize; //Programe size in MB
+    private LinkedList<Burst> bursts; //Linked list of bursts
     
     //Counter attributes
     private int CPUCounter; //Number of time it was in the CPU (RUNNING state)
@@ -18,10 +21,11 @@ public class PCB {
     private int finishTime; //Time it TERMINATED or KILLED
 
 
-    public PCB(int PID, int PrSize){
+    public PCB(int PID){
         this.PID = PID;
         this.setPState(PStates.WAITING);
-        this.PrgSize = PrSize;
+        this.PrgSize = 0;
+        this.bursts = new LinkedList<Burst>();
 
         this.CPUCounter = 0;
         this.IOCounter = 0;
@@ -36,6 +40,23 @@ public class PCB {
     
     RAM RAM = new RAM();
     //Methods
+    
+    public void addBurst(Burst b) {
+    	bursts.add(b);
+    }
+    
+    public void addBurst(int cpu, int mem, int io) {
+    	bursts.add(new Burst(cpu, mem, io));
+    }
+    
+    public LinkedList<Burst> getBursts() {
+    	return bursts;
+    }
+    
+    public Burst popBurst() {
+    	return bursts.pop();
+    }
+    
     public void letProcessReady(){
         this.setPState(PStates.READY);
 
@@ -60,7 +81,7 @@ public class PCB {
     }
 
     public void terminateProcess(){
-        this.setPState(PStates.TERMINATED);
+        th int getPrgSize() {  return 0;  }
         
         RAM.serveProcess();
 
@@ -81,7 +102,13 @@ public class PCB {
     }
     public PStates getPState(){  return this.PState;  }
 
-    public int getPrgSize() {  return this.PrgSize;  }
+    public int getProgSize() {
+    	int progSize = 0;
+    	for (Burst b : bursts) {
+    		progSize+=b.getMemory();
+    	}
+    	return progSize;
+    }
     
     public int getCPUCounter(){  return CPUCounter;  }
 
@@ -96,5 +123,9 @@ public class PCB {
     public int getIOTime(){  return IOTime;  }
 
     public int getFinishTime(){  return finishTime;  }
+
+	public void letProcessRunning() {
+		this.setPState(PStates.RUNNING);
+	}
 
 }

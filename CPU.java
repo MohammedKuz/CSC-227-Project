@@ -1,16 +1,32 @@
 public class CPU {
     private Clock time;
-    private int size;
+    private RAM ram;
 
     public CPU(){
         time = new Clock();
-        size = 0;
+        ram = new RAM();
     }
 
-    public void executionCycle(RAM ram){
-        PCB pcb = ram.serveProcess();
-        int cpuTime = pcb.getCPUTime();
+    public void executionCycle(){
+        ram.loadReadyQueue();
 
+        //sleep for 100ms
+        for (int i=0; i<100;i++){
+            Clock.incTime();
+        }
+
+        while (true){
+            Clock.incTime();
+            if (Clock.getTime()-100 % 200 == 0)){
+                ram.loadReadyQueue();
+            }
+            
+
+            
+            
+            
+        }
+    }
         // missing method
         pcb.letProcessRunning();
 
