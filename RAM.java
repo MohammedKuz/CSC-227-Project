@@ -23,7 +23,7 @@ public class RAM {
 
     public boolean addProcess(PCB process){
         if (canAdd(process.getPrgSize())){
-            readyQueue.enqueue(process, process.burstTime);
+            readyQueue.enqueue(process, process.getCPUTime());
             currentRamUsed += process.getPrgSize();
             return true;
         } else {
