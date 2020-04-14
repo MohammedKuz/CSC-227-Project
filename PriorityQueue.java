@@ -1,25 +1,29 @@
-public class PriorityQueue<T,P> {
-    private PQNode<T,P> head;
+public class PriorityQueue {
+    private PQNode head;
     private int size;
 
     public PriorityQueue(){
         head = null;
         size = 0;
     }
-
+    
+    public int length() {
+    	return size;
+    }
+    
     public boolean isEmpty(){
         return size==0;
     }
 
-    public void enqueue(T data, P priority){
-        PQNode<T,P> tmp = new PQNode<T,P>(data, priority);
+    public void enqueue(PCB data, int priority){
+        PQNode tmp = new PQNode(data, priority);
         if (size==0 || priority < head.priority) {
             tmp.next = head;
             head = tmp;
             size++;
         } else {
-            PQNode<T,P> current = head;
-            PQNode<T,P> currentPrev;
+            PQNode current = head;
+            PQNode currentPrev = null;
             for(int i=0;i<size;i++){
                 if(tmp.priority < current.priority){
                     currentPrev.next = tmp;
@@ -38,7 +42,7 @@ public class PriorityQueue<T,P> {
 
     // maybe <T,P>
     public PQNode serve(){
-        PQNode<T,P> node = head;
+        PQNode node = head;
         head = head.next;
         size--;
         return node;
