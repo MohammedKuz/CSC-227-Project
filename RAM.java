@@ -29,7 +29,6 @@ public class RAM {
             currentRamUsed += process.getProgSize();
             return true;
         } else {
-            // can we add waiting queue ?
             return false;
         }
     }
