@@ -1,16 +1,16 @@
-public class PQNode<T,P>{
+public class PQNode{
 
-    T data;
-    P priority;
+    PCB data;
+    int priority;
 
-    PQNode<T,P> next;
+    PQNode next;
 
     PQNode() {
         data=null;
-        priority=null;
+        priority=0;
     }
 
-    PQNode(T data, P priority){
+    PQNode(PCB data, int priority){
         this.data = data;
         this.priority = priority;
         next = null;
