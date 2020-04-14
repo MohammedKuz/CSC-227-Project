@@ -6,7 +6,7 @@ public class PCB {
  
     private int PID; //Process ID
     private PStates PState; //Process state 
-    private int PrgSize; //Programe size in MB
+    //private int PrgSize; //Programe size in MB
     private LinkedList<Burst> bursts; //Linked list of bursts
     
     //Counter attributes
@@ -24,7 +24,7 @@ public class PCB {
     public PCB(int PID){
         this.PID = PID;
         this.setPState(PStates.WAITING);
-        this.PrgSize = 0;
+        //this.PrgSize = 0;
         this.bursts = new LinkedList<Burst>();
 
         this.CPUCounter = 0;
@@ -102,7 +102,13 @@ public class PCB {
     }
     public PStates getPState(){  return this.PState;  }
 
-    public int getPrgSize() {  return this.PrgSize;  }
+    public int getProgSize() {
+    	int progSize = 0;
+    	for (Burst b : bursts) {
+    		progSize+=b.getMemory();
+    	}
+    	return progSize;
+    }
     
     public int getCPUCounter(){  return CPUCounter;  }
 
