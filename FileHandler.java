@@ -16,7 +16,9 @@ public class FileHandler {
 				for (int i=0;i<processes;i++) {
 					int burstMul = rand.nextInt(10)+1; // how many bursts?
 					int currentMemUsed = 0;
-					fw.write(i+"\t");
+					int pid = i;
+					int arrTime = rand.nextInt(80)+1;
+					fw.write(pid+"\t"+arrTime+"\t");
 					for (int j = 0; j < burstMul; j++) {
 						int cpuBurst = rand.nextInt(100)+10;
 						fw.write(cpuBurst+"\t"); // CPU burst
@@ -53,7 +55,7 @@ public class FileHandler {
 			
 			while (reader.hasNextLine()) {
 				String[] proc = reader.nextLine().split("\t");
-				PCB process = new PCB(Integer.parseInt(proc[0]));
+				PCB process = new PCB(Integer.parseInt(proc[0]), Integer.parseInt(proc[1]));
 				for (int i=1; i<proc.length-1; i+=3) {
 					int cpuBurst = Integer.parseInt(proc[i]);
 					int mem = Integer.parseInt(proc[i+1]);
@@ -73,11 +75,12 @@ public class FileHandler {
 		return jobQueue;
 	}
 	
+//	For testing purposes
 	public static void main(String[] args) {
 		genRandomFile(10);
 		PriorityQueue jobQueue = readFile();
 		PQNode tmp = jobQueue.serve();
-		
+		System.out.println(tmp.data.getArrivalTime());
 		LinkedList<Burst> bursts = tmp.data.getBursts();
 		System.out.println(bursts);
 	}
