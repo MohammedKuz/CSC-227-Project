@@ -3,7 +3,10 @@ import java.util.LinkedList;
 //GL
 public class PCB {
 
+<<<<<<< HEAD
+=======
  
+>>>>>>> 5e18cd7e7d5882c44cc964d46cfdedc72daa63f9
     private int PID; //Process ID
     private int arrivalTime; //
     private PStates PState; //Process state 

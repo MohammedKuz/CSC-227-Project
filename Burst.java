@@ -1,20 +1,20 @@
 
 public class Burst {
 
-	private int cpuBurst;
+	private Bursttype burst_type;
 	private int memory;
 	private int ioBurst;
 	
 	public Burst() {
-		this.cpuBurst = 0;
 		this.memory = 0;
-		this.ioBurst = 0;
 	}
 	
-	public Burst(int cpu, int mem, int io) {
-		cpuBurst = cpu;
+	public Burst(Bursttype burst_type, int mem) {
+		this.burst_type =Bursttype burst_type;
+		if(burst_type == cpuBurst)
 		memory = mem;
-		ioBurst = io;
+		else
+		memory = null;
 	}
 
 	public int getCpuBurst() {
