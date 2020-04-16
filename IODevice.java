@@ -28,12 +28,26 @@ public class IODevice {
     private void handleIOR() {
         currentProcess.incIOCounter();
 
+        if (currentProcess.getBursts().peek().getRemainingtime() > 0) {
+            currentProcess.incIOTime();
+            currentProcess.getBursts().peek().decRemainingtime();
+        }
+            else {
+            currentProcess.getBursts().removeFirst();
+            if(currentProcess.getBursts().isEmpty())
+                currentProcess.terminateProcess();
+            else
+            currentProcess.letProcessReady();
+        }
+
+
     }
 
     public void IORequest(PCB process) {
         waitingIOList.add(process);
     }
 
+    // This is will be used in a case of a deadlock
     public void killProcess(PCB process){
         if(waitingIOList.remove(process))
             process.killProcess();
