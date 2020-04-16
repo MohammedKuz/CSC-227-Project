@@ -43,7 +43,11 @@
     
     public void addBurst(int cpu, int mem, int io) {
         memoryUsed += mem;
+<<<<<<< HEAD
         bursts.add(new Burst(cpu, mem, io));
+=======
+    	bursts.add(new Burst(cpu, mem, io));
+>>>>>>> c38985b8f58ef4e03297b3fb1e4fa2d410e8f037
     }
     
     public LinkedList<Burst> getBursts() {
@@ -121,6 +125,7 @@
 
     public int getFinishTime(){  return finishTime;  }
 
+<<<<<<< HEAD
     public void letProcessRunning() {
         this.setPState(PStates.RUNNING);
         this.incCPUCounter();
@@ -128,4 +133,13 @@
 
 
     public int getArrivalTime() { return arrivalTime; }
+=======
+	public void letProcessRunning() {
+        this.setPState(PStates.RUNNING);
+        this.incCPUCounter();
+	}
+
+
+	public int getArrivalTime() { return arrivalTime; }
+>>>>>>> c38985b8f58ef4e03297b3fb1e4fa2d410e8f037
 }
