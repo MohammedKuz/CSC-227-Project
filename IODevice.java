@@ -1,6 +1,6 @@
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
+//This class need modifications
 public class IODevice {
 
     private static PCB currentProcess;

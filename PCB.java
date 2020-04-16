@@ -1,9 +1,10 @@
 import java.util.LinkedList;
 
+//GL
 public class PCB {
 
     private int PID; //Process ID
-    private int arrivalTime; //Arrival time for process
+    private int arrivalTime; //
     private PStates PState; //Process state 
     private LinkedList<Burst> bursts; //Linked list of bursts
     
@@ -11,7 +12,6 @@ public class PCB {
     private int CPUCounter; //Number of time it was in the CPU (RUNNING state)
     private int IOCounter; //Number of times it preformed an IO (WAITING state)
     private int memoryCounter; //Number of time it was waiting for memory
-    private int preemptionCounter; //Nubmber of times its preempted
     
     //Time attributes (All in MS)
     private int loadedTime; //When it was loaded into the ready queue
@@ -24,12 +24,12 @@ public class PCB {
         this.PID = PID;
         this.arrivalTime = arrTime;
         this.setPState(PStates.WAITING);
+        //this.PrgSize = 0;
         this.bursts = new LinkedList<Burst>();
 
         this.CPUCounter = 0;
         this.IOCounter = 0;
         this.memoryCounter = 0;
-        this.preemptionCounter = 0;
 
         this.loadedTime = -1;
         this.CPUTime = 0;
@@ -39,6 +39,7 @@ public class PCB {
 
 
     //Methods
+    
     public void addBurst(Burst b) {
     	bursts.add(b);
     }
@@ -58,10 +59,6 @@ public class PCB {
     public void letProcessReady(){
         this.setPState(PStates.READY);
     }
-
-    public void letProcessRunning() {
-		this.setPState(PStates.RUNNING);
-	}
 
     public void  letProcessWait(){
         this.setPState(PStates.WAITING);
@@ -84,18 +81,15 @@ public class PCB {
     //Incrementations
     public void incCPUCounter(){ CPUCounter++; }
     public void incIOCounter(){ IOCounter++; }
-    public void incMemoryCounter(){ memoryCounter++; }
-    public void incPreemtionCounter(){ preemptionCounter++; }
-    public void incCPUTime(){ CPUCounter++; }
-    public void incIOTime(){ IOTime++; }
+    public void memoryCounter(){ memoryCounter++; }
 
+    //(Need modifications)
     //Setters and Getters 
     public int getPID(){  return PID;  }
 
     public void setPState(PStates PState){
         this.PState = PState;
     }
-
     public PStates getPState(){  return this.PState;  }
 
     public int getProgSize() {
@@ -112,15 +106,21 @@ public class PCB {
 
     public int getMemoryCounter(){  return memoryCounter;  }
 
-    public int getPreemptionCounter(){  return preemptionCounter;  }
-
     public int getLoadedTime(){  return loadedTime;  }
 
     public int getCPUTime(){  return CPUTime;  }
 
     public int getIOTime(){  return IOTime;  }
 
+    public void incIOTime(){ IOTime++; }
+
     public int getFinishTime(){  return finishTime;  }
 
+	public void letProcessRunning() {
+		this.setPState(PStates.RUNNING);
+	}
+
+
 	public int getArrivalTime() { return arrivalTime; }
+
 }
