@@ -17,7 +17,7 @@ public class CPU {
 
         while (true){
             Clock.incTime();
-            if (Clock.getTime()-100 % 200 == 0)){
+            if (Clock.getTime()-100 % 200 == 0){
                 ram.loadReadyQueue();
             }
             
@@ -28,7 +28,7 @@ public class CPU {
         }
     }
         // missing method
-        pcb.letProcessRunning();
+//        pcb.letProcessRunning();
 
 
 
@@ -47,7 +47,5 @@ public class CPU {
             time.incTime();
         }
         */
-        
-    }
     
 }
