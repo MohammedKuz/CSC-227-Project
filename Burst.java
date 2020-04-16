@@ -1,49 +1,61 @@
 
 public class Burst {
-
+	
 	private Bursttype burst_type;
 	private int memory;
-	private int ioBurst;
+	private int remainingtime;
 	
 	public Burst() {
 		this.memory = 0;
 	}
 	
-	public Burst(Bursttype burst_type, int mem) {
-		this.burst_type =Bursttype burst_type;
-		if(burst_type == cpuBurst)
-		memory = mem;
-		else
-		memory = null;
+	public Burst(Bursttype burst_type, int memory, int remainingtime) {
+		this.burst_type = burst_type;
+		this.remainingtime = remainingtime;
+		if (burst_type == Bursttype.cpuBurst)
+			this.memory = memory;
+	}
+
+	public Bursttype getBurst_type() {
+		return burst_type;
 	}
 
 	public int getCpuBurst() {
 		return cpuBurst;
 	}
 
-	public void setCpuBurst(int cpuBurst) {
-		this.cpuBurst = cpuBurst;
-	}
-
-	public int getMemory() {
-		return memory;
+	public void setBurst_type(Bursttype burst_type) {
+		this.burst_type = burst_type;
 	}
 
 	public void setMemory(int memory) {
 		this.memory = memory;
 	}
 
-	public int getIoBurst() {
-		return ioBurst;
+	public int getMemory() {
+		return memory;
 	}
 
-	public void setIoBurst(int ioBurst) {
-		this.ioBurst = ioBurst;
+	public int getRemainingtime() {
+		return remainingtime;
 	}
+
+	public void decRemainingtime() {
+		remainingtime--;
+	}
+
+	public void setMemory(int memory) {
+		this.memory = memory;
+	}
+
 	
 	@Override
 	public String toString() {
-		return new String("CPUBurst: "+cpuBurst+" Memory: "+memory+" IOBurst: "+ioBurst);
+		return "Burst{" +
+				"burst_type=" + burst_type +
+				", memory=" + memory +
+				", remainingtime=" + remainingtime +
+				'}';
 	}
 	
 	

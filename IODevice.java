@@ -27,7 +27,7 @@ public class IODevice {
 
     private void handleIOR() {
         currentProcess.incIOCounter();
-
+        
     }
 
     public void IORequest(PCB process) {

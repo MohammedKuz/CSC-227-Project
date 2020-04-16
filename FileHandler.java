@@ -64,7 +64,7 @@ public class FileHandler {
 					Burst burst = new Burst(cpuBurst, mem, ioBurst);
 					process.addBurst(burst);
 				}
-				jobQueue.enqueue(process, process.getCPUTime());
+				jobQueue.enqueue(process, process.getArrivalTime());
 			}
 			
 			
