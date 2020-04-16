@@ -3,7 +3,6 @@ import java.util.LinkedList;
 //GL
 public class PCB {
 
- 
     private int PID; //Process ID
     private int arrivalTime; //
     private PStates PState; //Process state 
@@ -45,8 +44,8 @@ public class PCB {
     	bursts.add(b);
     }
     
-    public void addBurst(int cpu, int mem, int io) {
-    	bursts.add(new Burst(cpu, mem, io));
+    public void addBurst(int cpu, int mem, int io, int remainingtime) {
+    	bursts.add(new Burst(cpu, mem, io, remainingtime));
     }
     
     public LinkedList<Burst> getBursts() {
@@ -112,6 +111,8 @@ public class PCB {
     public int getCPUTime(){  return CPUTime;  }
 
     public int getIOTime(){  return IOTime;  }
+
+    public void incIOTime(){ IOTime++; }
 
     public int getFinishTime(){  return finishTime;  }
 

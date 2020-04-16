@@ -61,7 +61,7 @@ public class FileHandler {
 					int mem = Integer.parseInt(proc[i+1]);
 					int ioBurst = Integer.parseInt(proc[i+2]);
 					
-					Burst burst = new Burst(cpuBurst, mem, ioBurst);
+					Burst burst = new Burst(cpuBurst, mem, ioBurst, remainingtime);
 					process.addBurst(burst);
 				}
 				jobQueue.enqueue(process, process.getCPUTime());
