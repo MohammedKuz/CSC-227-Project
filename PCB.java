@@ -44,8 +44,8 @@ public class PCB {
     	bursts.add(b);
     }
     
-    public void addBurst(int cpu, int mem, int io, int remainingtime) {
-    	bursts.add(new Burst(cpu, mem, io, remainingtime));
+    public void addBurst(Bursttype burst_type, int memory, int remainingtime) {
+    	bursts.add(new Burst(burst_type, memory, remainingtime));
     }
     
     public LinkedList<Burst> getBursts() {
