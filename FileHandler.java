@@ -13,7 +13,7 @@ public class FileHandler {
 				f.createNewFile();
 				FileWriter fw = new FileWriter(f.getPath());
 				System.out.println(f.getPath());
-				for (int i=0;i<processes;i++) {
+				for (int i=1;i<processes+1;i++) {
 					int burstMul = rand.nextInt(10)+1; // how many bursts?
 					int currentMemUsed = 0;
 					int pid = i;
@@ -81,7 +81,7 @@ public class FileHandler {
 	
 //	For testing purposes
 	public static void main(String[] args) {
-		genRandomFile(1000);
+		genRandomFile(1);
 		PriorityQueue jobQueue = readFile();
 		PQNode tmp = jobQueue.serve();
 		System.out.println(tmp.data.getArrivalTime());
