@@ -5,7 +5,7 @@ public class RAM {
     
     PriorityQueue jobsQueue;
     PriorityQueue readyQueue; 
-    final static int maxRAM = 680;
+    final static int maxRAM = 68000;
     private static int currentRamUsed;
 
     RAM(){
@@ -23,13 +23,12 @@ public class RAM {
     }
 
     // add a process to ReadyQ
-    public boolean addProcess(PCB process){
+    public void addProcess(PCB process){
         if (canAdd(process.getCurrentMemory())){
-            readyQueue.enqueue(process, process.getCurrentBurstTime());
+            readyQueue.enqueue(process, process.getArrivalTime());
             currentRamUsed += process.getCurrentMemory();
-            return true;
         } else {
-            return false;
+            jobsQueue.enqueue(process, process.getCurrentBurstTime());
         }
     }
 
@@ -54,7 +53,6 @@ public class RAM {
         while(!jobsQueue.isEmpty()){
             PQNode process = jobsQueue.serve();
             if (canAdd(process.data.getCurrentMemory())){
-                process.data.setLoadedTime(Clock.getTime());
                 readyQueue.enqueue(process.data, process.priority);
                 currentRamUsed += process.data.getCurrentMemory();
             } else {

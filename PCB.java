@@ -81,7 +81,7 @@ public class PCB {
     public void terminateProcess(){
         this.setPState(PStates.TERMINATED);
 
-
+        
         finishTime = Clock.getTime();
     }
 
@@ -115,10 +115,10 @@ public class PCB {
     public int getPreemptionCounter(){  return preemptionCounter;  }
 
     public int getCurrentBurstTime(){ 
-    		if (this.getBursts().peek()!=null)
+//    		if (this.getBursts().peek()!=null)
     	return this.getBursts().peek().getRemainingtime();
-    		else
-    	return 0;
+//    		else
+//    	return 0;
     	}
     
     public void setLoadedTime(int time){ this.loadedTime = time; }

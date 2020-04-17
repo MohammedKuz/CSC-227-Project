@@ -14,7 +14,7 @@ public class FileHandler {
 				FileWriter fw = new FileWriter(f.getPath());
 				System.out.println(f.getPath());
 				for (int i=1;i<processes+1;i++) {
-					int burstMul = rand.nextInt(10)+1; // how many bursts?
+					int burstMul = rand.nextInt(3)+1; // how many bursts?
 					int currentMemUsed = 0;
 					int pid = i;
 					int arrTime = rand.nextInt(80)+1;
