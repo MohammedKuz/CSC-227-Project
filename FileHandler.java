@@ -81,7 +81,7 @@ public class FileHandler {
 	
 //	For testing purposes
 	public static void main(String[] args) {
-		genRandomFile(50);
+		genRandomFile(5);
 		PriorityQueue jobQueue = readFile();
 		PQNode tmp = jobQueue.serve();
 		System.out.println(tmp.data.getArrivalTime());

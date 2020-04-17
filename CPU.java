@@ -21,7 +21,6 @@ public class CPU extends Thread {
 
 			current_process = ram.serveProcess();
 			System.out.println("Served process");
-			current_burst = current_process.getCurrentBurstTime();
 
 			while (!ram.jobsQueue.isEmpty()) {
 //				System.out.println(Clock.getTime()+" time");
@@ -41,30 +40,38 @@ public class CPU extends Thread {
 
 			while (true) {
 				if (current_process != null) {
-//					if (current_process.getBursts().peek().getBurst_type().equals(Bursttype.cpuBurst)) {
-//						System.out.println("Received process: "+current_process.getCurrentBurstTime());
 						PCB tmp = ram.serveProcess();
-						if ((tmp!=null) && (tmp.getCurrentBurstTime() < current_burst)) {
-							current_process.letProcessReady();
-							current_process.incPreemtionCounter();
-							ram.addProcess(current_process);
-							current_process = tmp;
-							current_burst = current_process.getCurrentBurstTime();
+						if (tmp!=null) { //theres more in ready queue
+							if (!current_process.getBursts().isEmpty()) { //theres more bursts
+								if (tmp.getCurrentBurstTime() < current_process.getCurrentBurstTime()) { //tmp burst time less than current time
+									if (tmp.getArrivalTime() <= current_process.getArrivalTime()) { // tmp is before current
+										ram.addProcess(current_process);
+										current_process = tmp;
+									} else {
+										ram.addProcess(tmp);
+									}
+								} else {
+								}
+							} else {
+								current_process = tmp;
+								
+							}
+							
+							
 						} else {
-							if (tmp!=null)
-							ram.addProcess(tmp);
-						}
+							Clock.incTime();
+						}	
+
 	
 						// when cpuBurst is done
 						if (current_process.getCurrentBurstTime() == 0) {
 							System.out.println("pop burst");
 							if (!current_process.getBursts().isEmpty()){
 								current_process.getBursts().pop();
-	//							System.out.println(current_process.getCurrentBurstTime());
-								System.out.println(current_process.getPState());
+								System.out.println(current_process.getCurrentBurstTime());
+							} else {
+								break;
 							}
-							continue;
-							
 						}
 						if (current_process.getBursts().isEmpty()) {
 							System.out.println("Terminated");
@@ -82,11 +89,13 @@ public class CPU extends Thread {
 							System.out.println("Set to running "+current_process.getPID());
 							current_process.letProcessRunning();
 //							System.out.println(current_process.getPState());
+						} else if (current_process.getPState() != PStates.RUNNING) {
+							continue;
 						}
 						current_process.getBursts().peek().decRemainingtime();
 						current_process.incCPUTime();
 						Clock.incTime();
-//						System.out.println(Clock.getTime());
+						System.out.println(Clock.getTime());
 //					} else {
 ////						io request
 //					}
