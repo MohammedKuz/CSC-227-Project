@@ -114,7 +114,12 @@ public class PCB {
 
     public int getPreemptionCounter(){  return preemptionCounter;  }
 
-    public int getCurrentBurstTime(){ return this.getBursts().peek().getRemainingtime(); }
+    public int getCurrentBurstTime(){ 
+    		if (this.getBursts().peek()!=null)
+    	return this.getBursts().peek().getRemainingtime();
+    		else
+    	return 0;
+    	}
     
     public void setLoadedTime(int time){ this.loadedTime = time; }
     
