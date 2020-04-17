@@ -16,6 +16,8 @@ public class IODevice {
     public void run(){
         while(true){
             currentProcess = waitingIOList.poll();
+            if (currentProcess != null)
+            currentProcess.incIOCounter();
 
             if(currentProcess != null)
                 handleIOR();
