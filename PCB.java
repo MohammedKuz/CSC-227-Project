@@ -1,3 +1,6 @@
+import java.util.LinkedList;
+
+public class PCB {
 
     private int PID; //Process ID
     private int arrivalTime; //Arrival time for process
@@ -10,6 +13,8 @@
     private int CPUCounter; //Number of time it was in the CPU (RUNNING state)
     private int IOCounter; //Number of times it preformed an IO (WAITING state)
     private int memoryCounter; //Number of time it was waiting for memory
+    private int preemptionCounter;
+
     //Time attributes (All in MS)
     private int loadedTime; //When it was loaded into the ready queue
     private int CPUTime; //Total time spent in the CPU
@@ -41,21 +46,17 @@
         memoryUsed += b.getMemory();
     }
     
-    public void addBurst(int cpu, int mem, int io) {
-        memoryUsed += mem;
-<<<<<<< HEAD
-        bursts.add(new Burst(cpu, mem, io));
-=======
-    	bursts.add(new Burst(cpu, mem, io));
->>>>>>> c38985b8f58ef4e03297b3fb1e4fa2d410e8f037
+    public void addBurst(Bursttype burst_type, int memory, int remainingtime) {
+        memoryUsed += memory;
+    	bursts.add(new Burst(burst_type, memory, remainingtime));
     }
     
     public LinkedList<Burst> getBursts() {
-        return bursts;
+    	return bursts;
     }
     
     public Burst popBurst() {
-        return bursts.pop();
+    	return bursts.pop();
     }
     
     public void letProcessReady(){
@@ -64,12 +65,12 @@
 
     public void  letProcessWaitforio(){
         this.setPState(PStates.WAITING);
-        this.incIOCounter;
+        this.incIOCounter();
     }
 
     public void  letProcessWaitformemory(){
         this.setPState(PStates.WAITING);
-        this.incMemoryCounter;
+        this.incMemoryCounter();
     }
 
     public void killProcess(){
@@ -114,6 +115,7 @@
 
     public int getPreemptionCounter(){  return preemptionCounter;  }
 
+    public int getCurrentBurstTime(){ return this.getBursts().peek().getRemainingtime(); }
     
     public void setLoadedTime(int time){ this.loadedTime = time; }
     
@@ -125,15 +127,6 @@
 
     public int getFinishTime(){  return finishTime;  }
 
-<<<<<<< HEAD
-    public void letProcessRunning() {
-        this.setPState(PStates.RUNNING);
-        this.incCPUCounter();
-    }
-
-
-    public int getArrivalTime() { return arrivalTime; }
-=======
 	public void letProcessRunning() {
         this.setPState(PStates.RUNNING);
         this.incCPUCounter();
@@ -141,5 +134,4 @@
 
 
 	public int getArrivalTime() { return arrivalTime; }
->>>>>>> c38985b8f58ef4e03297b3fb1e4fa2d410e8f037
 }

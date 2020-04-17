@@ -22,11 +22,11 @@ public class RAM {
         return currentRamUsed;
     }
 
-
+    // add a process to ReadyQ
     public boolean addProcess(PCB process){
-        if (canAdd(process.getProgSize())){
-            readyQueue.enqueue(process, process.getBursts().peek().getRemainingtime());
-            currentRamUsed += process.getProgSize();
+        if (canAdd(process.getCurrentMemory())){
+            readyQueue.enqueue(process, process.getCurrentBurstTime());
+            currentRamUsed += process.getCurrentMemory();
             return true;
         } else {
             return false;
@@ -34,13 +34,13 @@ public class RAM {
     }
 
     public void decMemorySize(PCB p){
-        currentRamUsed -= process.getMemoryUsed;
+        currentRamUsed -= p.getMemoryUsed();
     }
 
     public PCB serveProcess(){
         if (currentRamUsed != 0){
             PCB process = readyQueue.serve().data;
-            // currentRamUsed -= process.getProgSize();
+            // currentRamUsed -= process.getCurrentMemory();
 
             return process;
         } else {
@@ -55,8 +55,8 @@ public class RAM {
         }
         while(!jobsQueue.isEmpty()){
             PQNode process = jobsQueue.serve();
-            if (canAdd(process.data.getProgSize() + extra_size)){
-                process.setLoadedTime(Clock.getTime());
+            if (canAdd(process.data.getCurrentMemory() + extra_size)){
+                process.data.setLoadedTime(Clock.getTime());
                 readyQueue.enqueue(process.data, process.priority);
                 // currentRamUsed
                 Clock.incTime();
