@@ -90,7 +90,7 @@ public class PCB {
     public void incIOCounter(){ IOCounter++; }
     public void incMemoryCounter(){ memoryCounter++; }
     public void incPreemtionCounter(){ preemptionCounter++; }
-    public void incCPUTime(){ CPUCounter++; }
+    public void incCPUTime(){ CPUTime++; }
     public void incIOTime(){ IOTime++; }
 
     //Setters and Getters 
@@ -114,7 +114,12 @@ public class PCB {
 
     public int getPreemptionCounter(){  return preemptionCounter;  }
 
-    public int getCurrentBurstTime(){ return this.getBursts().peek().getRemainingtime(); }
+    public int getCurrentBurstTime(){ 
+    		if (this.getBursts().peek()!=null)
+    	return this.getBursts().peek().getRemainingtime();
+    		else
+    	return 0;
+    	}
     
     public void setLoadedTime(int time){ this.loadedTime = time; }
     
@@ -139,13 +144,13 @@ public class PCB {
         return ("Process ID: " +this.PID
         + "\nProgram name: " +this.PID
         + "\nWhen it was loaded into the ready queue: " +this.loadedTime
-        + "\nNumber of times it was in the CPU: " +this.CPUCounter  
+        + "\nNumber of times it was in the CPU: " +this.CPUCounter
         + "\nTotal time spent in the CPU: " +this.CPUTime
         + "\nNumber of times it performed an IO: " +this.IOCounter
         + "\nTotal time spent in performing IO: "+this.IOTime
-        + "\nNumber of times it was waiting for memory: "+this.memoryCounter  
+        + "\nNumber of times it was waiting for memory: "+this.memoryCounter
         + "\nNumber of times its preempted (stopped execution because another process replaced it): " +this.preemptionCounter
-        + "\nTime it terminated or was killed: "+ (this.CPUTime - this.arrivalTime)
+        + "\nTime it terminated or was killed: "+ (this.finishTime)
         + "\nIts final state: Killed or Terminated: "+this.PState
         + "\nCPU Utilization: N/A");
     }
