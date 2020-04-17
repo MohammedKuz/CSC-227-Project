@@ -39,7 +39,7 @@ public class RAM {
 
     public PCB serveProcess(){
         
-        if (currentRamUsed != 0){
+        if (!readyQueue.isEmpty()){
         
             PCB process = readyQueue.serve().data;
             // currentRamUsed -= process.getCurrentMemory();
