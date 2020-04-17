@@ -66,12 +66,14 @@ public class FileHandler {
 					Burst burst = new Burst(burst_type, mem, burstTime);
 					process.addBurst(burst);
 				}
+				
 				jobQueue.enqueue(process, process.getArrivalTime());
 			}
 			
-			
+			reader.close();
 		} catch (Exception e) {
 			e.printStackTrace();
+			
 		}
 		
 		return jobQueue;
@@ -79,7 +81,7 @@ public class FileHandler {
 	
 //	For testing purposes
 	public static void main(String[] args) {
-		genRandomFile(10);
+		genRandomFile(1000);
 		PriorityQueue jobQueue = readFile();
 		PQNode tmp = jobQueue.serve();
 		System.out.println(tmp.data.getArrivalTime());
