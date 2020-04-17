@@ -38,7 +38,9 @@ public class RAM {
     }
 
     public PCB serveProcess(){
-        if (currentRamUsed != 0){
+        
+        if (!readyQueue.isEmpty()){
+        
             PCB process = readyQueue.serve().data;
             // currentRamUsed -= process.getCurrentMemory();
 
@@ -48,18 +50,13 @@ public class RAM {
         }
     }
 
-    public void loadReadyQueue(int currProcSize){
-        int extra_size = 0;
-        if (currProcSize>0){
-            extra_size = currProcSize;
-        }
+    public void loadReadyQueue(){
         while(!jobsQueue.isEmpty()){
             PQNode process = jobsQueue.serve();
-            if (canAdd(process.data.getCurrentMemory() + extra_size)){
+            if (canAdd(process.data.getCurrentMemory())){
                 process.data.setLoadedTime(Clock.getTime());
                 readyQueue.enqueue(process.data, process.priority);
-                // currentRamUsed
-                Clock.incTime();
+                currentRamUsed += process.data.getCurrentMemory();
             } else {
                 // maybe set state to waiting
                 process.data.incMemoryCounter();

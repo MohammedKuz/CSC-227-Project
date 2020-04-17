@@ -1,6 +1,6 @@
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
+//This class need modifications
 public class IODevice {
 
     private static PCB currentProcess;
@@ -28,7 +28,6 @@ public class IODevice {
     }
 
     private void handleIOR() {
-        currentProcess.incIOCounter();
 
         if (currentProcess.getBursts().peek().getRemainingtime() > 0) {
             currentProcess.incIOTime();

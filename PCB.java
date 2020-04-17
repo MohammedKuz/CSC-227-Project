@@ -7,13 +7,12 @@ public class PCB {
     private PStates PState; //Process state 
     private LinkedList<Burst> bursts; //Linked list of bursts
     private int memoryUsed; //total memory used 
-    private int currentMemory; //first cpuburst memory value
 
     //Counter attributes
     private int CPUCounter; //Number of time it was in the CPU (RUNNING state)
     private int IOCounter; //Number of times it preformed an IO (WAITING state)
     private int memoryCounter; //Number of time it was waiting for memory
-    private int preemptionCounter;
+    private int preemptionCounter; //Number of times it's preempted 
 
     //Time attributes (All in MS)
     private int loadedTime; //When it was loaded into the ready queue
@@ -133,5 +132,21 @@ public class PCB {
 	}
 
 
-	public int getArrivalTime() { return arrivalTime; }
+    public int getArrivalTime() { return arrivalTime; }
+    
+    @Override
+    public String toString() {
+        return ("Process ID: " +this.PID
+        + "\nProgram name: " +this.PID
+        + "\nWhen it was loaded into the ready queue: " +this.loadedTime
+        + "\nNumber of times it was in the CPU: " +this.CPUCounter  
+        + "\nTotal time spent in the CPU: " +this.CPUTime
+        + "\nNumber of times it performed an IO: " +this.IOCounter
+        + "\nTotal time spent in performing IO: "+this.IOTime
+        + "\nNumber of times it was waiting for memory: "+this.memoryCounter  
+        + "\nNumber of times its preempted (stopped execution because another process replaced it): " +this.preemptionCounter
+        + "\nTime it terminated or was killed: "+ (this.CPUTime - this.arrivalTime)
+        + "\nIts final state: Killed or Terminated: "+this.PState
+        + "\nCPU Utilization: N/A");
+    }
 }
