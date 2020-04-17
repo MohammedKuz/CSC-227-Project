@@ -16,6 +16,8 @@ public class IODevice {
     public void run(){
         while(true){
             currentProcess = waitingIOList.poll();
+            if (currentProcess != null)
+            currentProcess.incIOCounter();
 
             if(currentProcess != null)
                 handleIOR();
@@ -26,7 +28,6 @@ public class IODevice {
     }
 
     private void handleIOR() {
-        currentProcess.incIOCounter();
 
         if (currentProcess.getBursts().peek().getRemainingtime() > 0) {
             currentProcess.incIOTime();
