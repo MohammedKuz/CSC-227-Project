@@ -82,7 +82,7 @@ public class PCB {
         this.setPState(PStates.TERMINATED);
 
         
-        finishTime = Clock.getTime();
+        finishTime = Clock.getTime()-1;
     }
 
     //Incrementations
@@ -143,7 +143,7 @@ public class PCB {
     public String toString() {
         return ("Process ID: " +this.PID
         + "\nProgram name: " +this.PID
-        + "\nWhen it was loaded into the ready queue: " +this.loadedTime
+        + "\nWhen it was loaded into the ready queue: " +this.arrivalTime
         + "\nNumber of times it was in the CPU: " +this.CPUCounter
         + "\nTotal time spent in the CPU: " +this.CPUTime
         + "\nNumber of times it performed an IO: " +this.IOCounter

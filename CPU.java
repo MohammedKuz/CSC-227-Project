@@ -40,17 +40,23 @@ public class CPU extends Thread {
 					if ((tmp = ram.serveProcess())!=null) {
 						if (!current_process.getBursts().isEmpty()) {
 							if (tmp.getBursts().peek().getRemainingtime() < current_process.getBursts().peek().getRemainingtime()) { //check if next proc has less time than current proc
-								if (tmp.getArrivalTime() < current_process.getArrivalTime()) { //check who should execute first
+								if ((tmp.getArrivalTime()<=Clock.getTime()-100)) { //check who should execute first
 									System.out.println("Switching to PID: "+tmp.getPID());
 									current_process.letProcessReady();
+									current_process.incPreemtionCounter();
+									ram.decMemorySize(current_process);
 									ram.addProcess(current_process);
 									current_process = tmp;
+									System.out.println("ram used: "+ram.getRamUsed());
 								} else {
 									ram.addProcess(tmp);
+									ram.decMemorySize(tmp);
 								}
 							} else {
 								ram.addProcess(tmp);
+								ram.decMemorySize(tmp);
 							}
+							
 						} else { //no more bursts, next process is available
 							current_process.terminateProcess();
 							ram.decMemorySize(current_process);
@@ -67,10 +73,14 @@ public class CPU extends Thread {
 							continue;
 					}
 					
-					if (current_process.getArrivalTime()>=Clock.getTime()-100) { //if not waiting time yet
+					if ((current_process.getArrivalTime()>=(Clock.getTime()-100))) { //if not waiting time yet
+						System.out.println(current_process.getArrivalTime()+"  >= "+(Clock.getTime()-100));
+						System.out.println(current_process.getArrivalTime()>=Clock.getTime()-100);
+						System.out.println(Clock.getTime());
 						Clock.incTime();
 						continue;
-					} else {
+					} else if (current_process.getLoadedTime()==-1){
+						System.out.println("Setting to "+Clock.getTime());
 						current_process.setLoadedTime(Clock.getTime()); //time arrived
 					}
 					//check state
@@ -79,15 +89,20 @@ public class CPU extends Thread {
 						current_process.incCPUCounter();
 					}
 					
-					if(current_process.getBursts().isEmpty()) { //check to avoid null pointer
+					if(current_process.getBursts().isEmpty() && !current_process.getPState().equals(PStates.TERMINATED)) { //check to avoid null pointer
 						current_process.terminateProcess(); //last process
 						ram.decMemorySize(current_process);
 						System.out.println("------------------------------------------------");
 						System.out.println(current_process);
 						break;
+					} else if (current_process.getPState().equals(PStates.TERMINATED)){
+						System.out.println(Clock.getTime());
+						Clock.incTime();
+						continue;
 					}
 					
 					//do burst
+//					System.out.println("Time: "+Clock.getTime()+" | PID: "+current_process.getPID()+" | burst: "+current_process.getCurrentBurstTime());
 					current_process.incCPUTime();
 					current_process.getBursts().peek().decRemainingtime();
 					Clock.incTime();

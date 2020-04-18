@@ -40,7 +40,6 @@ public class PriorityQueue {
         }
     }
 
-    // maybe <T,P>
     public PQNode serve(){
         PQNode node = head;
         head = head.next;
