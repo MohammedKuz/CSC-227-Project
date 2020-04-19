@@ -1,0 +1,52 @@
+				 //����������[multiprogramming-os-simulation]����������\\
+
+CPU Utilization: 84%
+CPU busy time: 4209 ms
+CPU idle time: 780 ms
+CPU total time: 4989 ms
+
+Terminated processes: 17
+Killed processes: 3
+
+#	� process ID 	 Loaded Time 	 #Times in CPU 	 Total in CPU 	 #Times in IO 	 Total in IO 	 #Times for memory allocation 	 Finished Time 	 Final State
+1		9		15		2		128		2		128 			0			367	 TERMINATED
+
+2		4		9		2		142		2		142 			0			436	 TERMINATED
+
+3		19		9		3		96		3		96 			2			547	 TERMINATED
+
+4		3		12		4		164		4		164 			0			806	 KILLED
+
+5		6		39		3		201		3		201 			0			1033	 KILLED
+
+6		8		40		5		336		5		336 			0			1268	 TERMINATED
+
+7		14		28		2		91		2		91 			2			1919	 TERMINATED
+
+8		15		1365		4		155		4		155 			0			2297	 TERMINATED
+
+9		13		1365		4		199		4		199 			0			2857	 TERMINATED
+
+10		11		1365		6		393		6		393 			0			3014	 TERMINATED
+
+11		1		1365		6		462		6		462 			0			3126	 TERMINATED
+
+12		17		1365		5		257		5		257 			2			3676	 TERMINATED
+
+13		2		1365		5		315		5		315 			0			3743	 TERMINATED
+
+14		16		1365		6		309		6		309 			6			3798	 TERMINATED
+
+15		20		3824		1		18		1		18 			0			3966	 TERMINATED
+
+16		18		1365		4		241		4		241 			2			4342	 TERMINATED
+
+17		12		3824		4		209		4		209 			0			4496	 KILLED
+
+18		10		3824		3		209		3		209 			0			4694	 TERMINATED
+
+19		7		3824		2		170		2		170 			2			4883	 TERMINATED
+
+20		5		3824		2		114		2		114 			4			4989	 TERMINATED
+
+				 //��������������������-_END_-��������������������\\
