@@ -80,9 +80,8 @@ public class PCB {
 
     public void terminateProcess(){
         this.setPState(PStates.TERMINATED);
-
-        
         finishTime = Clock.getTime();
+        RAM.decMemorySize(this);
     }
 
     //Incrementations
