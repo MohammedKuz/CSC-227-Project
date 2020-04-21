@@ -1,27 +1,27 @@
-
 public class Burst {
-	
-	private Bursttype burst_type;
+    
+    private burstType burst_type;
 	private int memory;
 	private int remainingtime;
 	
 	public Burst() {
 		this.memory = 0;
-	}
-	
-	public Burst(Bursttype burst_type, int memory, int remainingtime) {
+    }
+    
+	public Burst(burstType burst_type, int memory, int remainingtime) {
 		this.burst_type = burst_type;
 		this.remainingtime = remainingtime;
-		if (burst_type == Bursttype.cpuBurst)
+		if (burst_type == burstType.CPUBurst)
 			this.memory = memory;
-	}
+    }
 
-	public Bursttype getBurst_type() {
-		return burst_type;
-	}
-
-
-	public void setBurst_type(Bursttype burst_type) {
+    public void decRemainingtime() {
+		remainingtime--;
+    }
+    
+    //Setters and Getters
+	public burstType getBurst_type() {  return burst_type;  }
+	public void setBurst_type(burstType burst_type) {
 		this.burst_type = burst_type;
 	}
 
@@ -29,25 +29,8 @@ public class Burst {
 		this.memory = memory;
 	}
 
-	public int getMemory() {
-		return memory;
-	}
+	public int getMemory() {  return memory;  }
 
-	public int getRemainingtime() {
-		return remainingtime;
-	}
+	public int getRemainingtime() {  return remainingtime;  } 
 
-
-	public void decRemainingtime() {
-		remainingtime--;
-	}
-
-	@Override
-	public String toString() {
-		return "Burst{" +
-				"burst_type=" + burst_type +
-				", memory=" + memory +
-				", remainingtime=" + remainingtime +
-				'}';
-	}
 }

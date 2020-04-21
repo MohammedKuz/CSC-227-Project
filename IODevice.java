@@ -1,64 +1,75 @@
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class IODevice {
+public class IODevice extends Thread {
 
-    private static PCB currentProcess;
-    private static Queue<PCB> waitingIOList;
+	private static PCB currentProcess;
+	private static Queue<PCB> waitingList; // PCB in waiting state
 
-    public IODevice() {
-        currentProcess = null;
-        waitingIOList = new ConcurrentLinkedQueue<>();
-    }
-    
-    
-    // Methods
-    public void run(){
-        while(true){
-            currentProcess = waitingIOList.poll();
-            if (currentProcess != null)
-            currentProcess.incIOCounter();
+	public IODevice() {
+		currentProcess = null;
+		waitingList = new ConcurrentLinkedQueue<>();
+	}
 
-            if(currentProcess != null)
-                handleIOR();
-            else{
-                //Sleep
-            }
-        }
-    }
+	public void run() {
+		// While OS is running, keep handling IO requests if available
+		while (true) {
+			currentProcess = waitingList.poll();
 
-    private void handleIOR() {
+			if (currentProcess != null) {
+				handleIORequest();
+			} else {
+			}
+		}
 
-        if (currentProcess.getBursts().peek().getRemainingtime() > 0) {
-            currentProcess.incIOTime();
-            currentProcess.getBursts().peek().decRemainingtime();
-        }
-            else {
-            currentProcess.getBursts().removeFirst();
-            if(currentProcess.getBursts().isEmpty())
-                currentProcess.terminateProcess();
-            else
-            currentProcess.letProcessReady();
-        }
+	}
 
+	private void handleIORequest() {
+		currentProcess.incrementIOCounter();
+		while (currentProcess.getCurrentBurst().getRemainingtime() > 0) {
+			currentProcess.incrementIOTime();
+			currentProcess.getCurrentBurst().decRemainingtime();
+		}
+		if (currentProcess.nextBurst() == null) {
+			currentProcess.terminateProcess();
+			return;
+		}
+		currentProcess.letProcessReady();
+	}
 
-    }
+	public void addProcessToDevice(PCB process) {
+		waitingList.add(process);
+	}
 
-    public void IORequest(PCB process) {
-        waitingIOList.add(process);
-    }
+	void killProcessFromIOQueue(PCB process) {
+		if (waitingList.remove(process)) {
+			process.killProcess();
+		}
+	}
 
-    // This is will be used in a case of a deadlock
-    public void killProcess(PCB process){
-        if(waitingIOList.remove(process))
-            process.killProcess();
-    }
+	// used for deadlock
+	PCB getMaxProcess() {
+		Object[] list = waitingList.toArray();
+		PCB maxPCB = (PCB) list[0];
+		for (int i = 1; i < list.length; i++) {
+			PCB currentPCB = (PCB) list[i];
+			if (currentPCB.getPrSize() > maxPCB.getPrSize())
+				maxPCB = currentPCB;
+		}
 
-    public boolean isEmpty(){
-        return waitingIOList.isEmpty();
-    }
+		return maxPCB;
+	}
 
-    public PCB getProcess(){
-        return currentProcess;
-    }
+	boolean isEmpty() {
+		return waitingList.isEmpty();
+	}
+
+	PCB getCurrentProcess() {
+		return currentProcess;
+	}
+
+	Queue<PCB> getWaitingList() {
+		return waitingList;
+	}
+
 }

@@ -1,202 +1,111 @@
 
-public class CPU extends Thread{
-    private Clock time; //this is never used I think it shouldn't be used cause time should be global not an object in cpu
-    private RAM ram;
-    private IODevice iodev;
+public class CPU extends Thread {
+	private IODevice ioDevice;
+	private PCB currentActiveProcess;
+	private static int busyTime;
+	private static int idleTime;
+	static final int TIME = 1;
 
+	CPU(IODevice ioDevice) {
+		this.ioDevice = ioDevice;
 
-    public CPU(){
-        time = new Clock();
-        ram = new RAM();
-        iodev = new IODevice();
-    }
-    
-    @Override
-    public void run() {
-        //Execution cycle
-        ram.loadReadyQueue(); //this method needs int parameter
-        
-        //sleep for 100ms
-        for (int i=0; i<100;i++){
-            Clock.incTime();
-        }
-        PCB process = ram.serveProcess();
-        int burst_time = process.getCurrentBurstTime();
-        //Start execution
-        while (true){
-            if (Clock.getTime()-100 % 200 == 0){
-                ram.loadReadyQueue(process.getCurrentMemory());
-            }
-            // while (true){
-                // Clock.incTime();            
-            // loop
-            PCB tmp = ram.serveProcess();
-            // check process not null
-            
+		this.currentActiveProcess = null;
+		CPU.busyTime = 0;
+		CPU.idleTime = 0;
+	}
 
+	@Override
+	public void run() {
+//		thread execution point of CPU
+		while (true) {
+			currentActiveProcess = RAM.getreadyQueue().poll();
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+			if (currentActiveProcess != null) {
+				handleCurrentProcess();
 
-            if(tmp==null){
-                Clock.incTime();
-                continue;
-            }
+			} else {
+				try {
+					synchronized (CPU.currentThread()) {
+						Thread.sleep(1);
+					}
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				synchronized (Clock.class) {
+					Clock.incrementTime();
+				}
+				CPU.idleTime++;
+				if (RAM.getreadyQueue().isEmpty() && RAM.getWaitingQ().isEmpty() && ioDevice.isEmpty())
+					OS.stopOS();
+			}
+		}
+	}
 
-            //in case of a preemption
-            if (tmp.getCurrentBurstTime()<burst_time){
-                process.letProcessReady();
-                process.incPreemtionCounter();
-                ram.addProcess(process);
-                process = tmp;
-                burst_time = process.getCurrentBurstTime();
-            } else {
-                ram.addProcess(tmp);
-            }
+	private void handleCurrentProcess() {
+		PCB process = this.currentActiveProcess;
+		process.setPState(ProcessState.RUNNING);
+		Burst currentBurst = process.getCurrentBurst();
+		process.incrementCPUCounter();
 
-            //when cpuBurst is done
-            if(process.getCurrentBurstTime() == 0){
-                process.getBursts().pop();
-                if(process.getBursts().isEmpty()){
-                    process.terminateProcess();
-                    // return process to print
-                    ram.decMemorySize(process);
-                }
-                else{
-                    iodev.IORequest(process);
-                }
-            }
+		while (currentBurst.getRemainingtime() > 0) {
 
-            executionCycle(process);
-        }
-            
-            
-            
-        // }
-    }
-    public void executionCycle(PCB p){
-        if (p.getPState() != PStates.RUNNING) {
-            p.letProcessRunning();
-            p.incCPUCounter();
-        }
-        p.getBursts().peek().decRemainingtime();
-        p.incCPUTime();
-        Clock.incTime();
-    }
-        
-        // }
+			currentBurst.decRemainingtime();
+			process.incrementCPUTotalTime();
+			CPU.busyTime++;
+			synchronized (Clock.class) {
+				Clock.incrementTime();
+			}
+			PCB tmp = RAM.getreadyQueue().poll();
 
-        
-            // finish io burst
-           
-            // process.letProcessRunning();
-            // if(process.getCPUTime() != 0){
-            //     process.incCPUCounter();
-            // }else{
-            //     process.incIOCounter();
-            // }
+			if (tmp != null && tmp.getCurrentBurst().getRemainingtime() < currentBurst.getRemainingtime()) {
+				process.incPreemptionCounter();
+				process.letProcessReady();
+				process = tmp;
+				currentBurst = process.getCurrentBurst();
+				currentActiveProcess = process;
+				process.setPState(ProcessState.RUNNING);
+			} else {
+				if (tmp != null)
+					RAM.addToReadyQueue(tmp);
 
-            
-           
-            // process.letProcessRunning();
-            // if(process.getCPUTime() != 0){
-            //     process.incCPUCounter();
-            // }else{
-            //     process.incIOCounter();
-            // }
+			}
 
-            
-           
-            // process.letProcessRunning();
-            // if(process.getCPUTime() != 0){
-            //     process.incCPUCounter();
-            // }else{
-            //     process.incIOCounter();
-            // }
+		}
+		Burst nextBurst = process.nextBurst();
 
-            
-           
-            // process.letProcessRunning();
-            // if(process.getCPUTime() != 0){
-            //     process.incCPUCounter();
-            // }else{
-            //     process.incIOCounter();
-            // }
+		if (nextBurst == null) {
+			process.terminateProcess();
+			System.out.println(process.getPID());
+			return;
+		}
 
-            
-           
-            // process.letProcessRunning();
-            // if(process.getCPUTime() != 0){
-            //     process.incCPUCounter();
-            // }else{
-            //     process.incIOCounter();
-            // }
+		Burst cpuBurst = currentBurst;
+		int memoryValue = cpuBurst.getMemory();
 
-            
-           
-            // process.letProcessRunning();
-            // if(process.getCPUTime() != 0){
-            //     process.incCPUCounter();
-            // }else{
-            //     process.incIOCounter();
-            // }
+		if (memoryValue != 0)
+			RAM.handleMemoryValue(process, memoryValue);
+		if (process.getPState().equals(ProcessState.RUNNING) && nextBurst.getBurst_type().equals(burstType.IOBurst)) {
+			// Handle IO Burst
+			process.setPState(ProcessState.WAITING);
+			ioDevice.addProcessToDevice(this.currentActiveProcess);
+		}
+		try {
+			sleep(1);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
-            
-           
-            // process.letProcessRunning();
-            // if(process.getCPUTime() != 0){
-            //     process.incCPUCounter();
-            // }else{
-            //     process.incIOCounter();
-            // }
+	static int getBusyTime() {
+		return CPU.busyTime;
+	}
 
-            
-           
-            // process.letProcessRunning();
-            // if(process.getCPUTime() != 0){
-            //     process.incCPUCounter();
-            // }else{
-            //     process.incIOCounter();
-            // }
-
-            
-           
-            // process.letProcessRunning();
-            // if(process.getCPUTime() != 0){
-            //     process.incCPUCounter();
-            // }else{
-            //     process.incIOCounter();
-            // }
-
-            
-           
-            // process.letProcessRunning();
-            // if(process.getCPUTime() != 0){
-            //     process.incCPUCounter();
-            // }else{
-            //     process.incIOCounter();
-            // }
-
-            
-            
-        // }
-    // }
-        // missing method
-//        pcb.letProcessRunning();
-
-
-
-
-        /*
-
-        At each millisecond:
-        check if cpu burst has ended
-        check if the io burst has ended
-        or a new process enters the ready queue and its time < current process time (interrupt)
-        check if WAITING process can be put in ready queue
-
-        while (time.getTime() % 200 == 0){
-
-
-            time.incTime();
-        }
-        */
-    
+	static int getIdleTime() {
+		return CPU.idleTime;
+	}
 }

@@ -1,137 +1,189 @@
-import java.util.LinkedList;
+import java.util.Queue;
 
 public class PCB {
 
-    private int PID; //Process ID
-    private int arrivalTime; //Arrival time for process
-    private PStates PState; //Process state 
-    private LinkedList<Burst> bursts; //Linked list of bursts
-    private int memoryUsed; //total memory used 
-    private int currentMemory; //first cpuburst memory value
+	private int PID; // Process ID
+	private int arrivalTime; // Process arrival time
+	private int loadedTime; // When it was loaded in Ready queue
+	private ProcessState PState; // Process State
+	public Queue<Burst> burstQueue; // Queue of bursts
+	private int PrSize; // Full size of program MB
+	private Burst currentBurst; // The current burst in PCB
 
-    //Counter attributes
-    private int CPUCounter; //Number of time it was in the CPU (RUNNING state)
-    private int IOCounter; //Number of times it preformed an IO (WAITING state)
-    private int memoryCounter; //Number of time it was waiting for memory
-    private int preemptionCounter;
+	// Counter attributes
+	private int CPUCounter; // Number of time it was in the CPU (RUNNING state)
+	private int IOCounter; // Number of times it preformed an IO (WAITING state)
+	private int memoryCounter; // Number of times this process requested memory allocation
+	private int preemptionCounter;// Number of times it was preempted
 
-    //Time attributes (All in MS)
-    private int loadedTime; //When it was loaded into the ready queue
-    private int CPUTime; //Total time spent in the CPU
-    private int IOTime; //Total time spent in preforming IO
-    private int finishTime; //Time it TERMINATED or KILLED
+	// Time attributes (All in MS)
+	private int IOTime; // Total time it was executed in IO
+	private int CPUTotalTime; // Total time it was executing in CPU
+	private int finishTime; // Time this process TERMINATED or KILLED
 
+	PCB(int PID, int arrivalTime, int PrSize, Queue<Burst> burstQueue) {
+		this.PID = PID;
+		this.loadedTime = -1;
+		this.arrivalTime = arrivalTime;
 
-    public PCB(int PID, int arrTime){
-        this.PID = PID;
-        this.arrivalTime = arrTime;
-        this.setPState(PStates.WAITING);
-        this.bursts = new LinkedList<Burst>();
-        this.memoryUsed = 0;
+		this.CPUCounter = 0;
+		this.IOCounter = 0;
+		this.IOTime = 0;
+		this.memoryCounter = 0;
+		this.CPUTotalTime = 0;
+		this.finishTime = 0;
 
-        this.CPUCounter = 0;
-        this.IOCounter = 0;
-        this.memoryCounter = 0;
-        this.preemptionCounter = 0;
+		this.PrSize = PrSize;
+		this.PState = ProcessState.WAITING;
 
-        this.loadedTime = -1;
-        this.CPUTime = 0;
-        this.IOTime = 0;
-        this.finishTime = 0;
-    }
+		// Set first element of the queue as currentBurst
+		this.currentBurst = burstQueue.poll();
 
-    //Methods
-    public void addBurst(Burst b) {
-        bursts.add(b);
-        memoryUsed += b.getMemory();
-    }
-    
-    public void addBurst(Bursttype burst_type, int memory, int remainingtime) {
-        memoryUsed += memory;
-    	bursts.add(new Burst(burst_type, memory, remainingtime));
-    }
-    
-    public LinkedList<Burst> getBursts() {
-    	return bursts;
-    }
-    
-    public Burst popBurst() {
-    	return bursts.pop();
-    }
-    
-    public void letProcessReady(){
-        this.setPState(PStates.READY);
-    }
-
-    public void  letProcessWaitforio(){
-        this.setPState(PStates.WAITING);
-        this.incIOCounter();
-    }
-
-    public void  letProcessWaitformemory(){
-        this.setPState(PStates.WAITING);
-        this.incMemoryCounter();
-    }
-
-    public void killProcess(){
-        this.setPState(PStates.KILLED);
-        this.CPUTime = 
-        finishTime = Clock.getTime();
-    }
-
-    public void terminateProcess(){
-        this.setPState(PStates.TERMINATED);
-
-
-        finishTime = Clock.getTime();
-    }
-
-    //Incrementations
-    public void incCPUCounter(){ CPUCounter++; }
-    public void incIOCounter(){ IOCounter++; }
-    public void incMemoryCounter(){ memoryCounter++; }
-    public void incPreemtionCounter(){ preemptionCounter++; }
-    public void incCPUTime(){ CPUCounter++; }
-    public void incIOTime(){ IOTime++; }
-
-    //Setters and Getters 
-    public int getPID(){  return PID;  }
-
-    public void setPState(PStates PState){
-        this.PState = PState;
-    }
-
-    public PStates getPState(){  return this.PState;  }
-
-    public int getMemoryUsed() {  return memoryUsed;  }
-
-    public int getCurrentMemory() { return bursts.peek().getMemory(); }
-    
-    public int getCPUCounter(){  return CPUCounter;  }
-
-    public int getIOCounter(){  return IOCounter;  }
-
-    public int getMemoryCounter(){  return memoryCounter;  }
-
-    public int getPreemptionCounter(){  return preemptionCounter;  }
-
-    public int getCurrentBurstTime(){ return this.getBursts().peek().getRemainingtime(); }
-    
-    public void setLoadedTime(int time){ this.loadedTime = time; }
-    
-    public int getLoadedTime(){  return loadedTime;  }
-
-    public int getCPUTime(){  return CPUTime;  }
-
-    public int getIOTime(){  return IOTime;  }
-
-    public int getFinishTime(){  return finishTime;  }
-
-	public void letProcessRunning() {
-        this.setPState(PStates.RUNNING);
-        this.incCPUCounter();
+		// Put the rest of the queue in burstQueue for future use
+		this.burstQueue = burstQueue;
 	}
 
+	public String toString() {
+		return ("Process ID: " + this.PID + "\nProgram name: " + this.PID
+				+ "\nWhen it was loaded into the ready queue: " + this.loadedTime
+				+ "\nNumber of times it was in the CPU: " + this.CPUCounter + "\nTotal time spent in the CPU: "
+				+ this.CPUTotalTime + "\nNumber of times it performed an IO: " + this.IOCounter
+				+ "\nTotal time spent in performing IO: " + this.IOTime
+				+ "\nNumber of times it was waiting for memory: " + this.memoryCounter
+				+ "\nNumber of times its preempted (stopped execution because another process replaced it): "
+				+ this.preemptionCounter + "\nTime it terminated or was killed: " + (this.finishTime)
+				+ "\nIts final state: Killed or Terminated: " + this.PState);
+	}
 
-	public int getArrivalTime() { return arrivalTime; }
+	// This method will be used for PriorityQueue prioritization comparator
+	public int compareTo(Object obj) {
+		return this.currentBurst.getRemainingtime() - ((PCB) obj).currentBurst.getRemainingtime();
+	}
+
+	Burst nextBurst() {
+		this.currentBurst = this.burstQueue.poll();
+		return this.currentBurst;
+	}
+
+	// Prosess states
+	void killProcess() {
+		this.setfinishTime(Clock.getCurrentTime());
+		this.setPState(ProcessState.KILLED);
+		RAM.subtractFromUsage(this.PrSize);
+		OS.addFinishedProcess(this);
+		if (OS.isFullyFinished())
+			OS.stopOS();
+	}
+
+	void terminateProcess() {
+		this.setfinishTime(Clock.getCurrentTime());
+		this.setPState(ProcessState.TERMINATED);
+		RAM.subtractFromUsage(this.PrSize);
+		OS.addFinishedProcess(this);
+		if (OS.isFullyFinished())
+			OS.stopOS();
+	}
+
+	void letProcessWait() {
+		this.setPState(ProcessState.WAITING);
+		this.incrementMemoryCounter();
+		RAM.subtractFromUsage(this.PrSize);
+		RAM.addToJobQueue(this);
+	}
+
+	// dont need it
+	void letProcessReady() {
+		this.setPState(ProcessState.READY);
+		RAM.addToReadyQueue(this);
+	}
+
+	// Incrementaions
+	void incrementCPUCounter() {
+		this.CPUCounter++;
+	}
+
+	void incrementIOCounter() {
+		this.IOCounter++;
+	}
+
+	void incrementMemoryCounter() {
+		this.memoryCounter++;
+	}
+
+	void incrementIOTime() {
+		this.IOTime++;
+	}
+
+	void incrementCPUTotalTime() {
+		this.CPUTotalTime++;
+	}
+
+	void incPreemptionCounter() {
+		this.preemptionCounter++;
+	}
+
+	// Getters and Setters
+	int getPID() {
+		return PID;
+	}
+
+	int getArrivalTime() {
+		return this.arrivalTime;
+	}
+
+	void setLoadedTime(int loadedTime) {
+		this.loadedTime = loadedTime;
+	}
+
+	ProcessState getPState() {
+		return PState;
+	}
+
+	void setPState(ProcessState PState) {
+		this.PState = PState;
+	}
+
+	int getPrSize() {
+		return PrSize;
+	}
+
+	void setPrSize(int PrSize) {
+		this.PrSize = PrSize;
+	}
+
+	Burst getCurrentBurst() {
+		return this.currentBurst;
+	}
+
+	int getCPUCounter() {
+		return CPUCounter;
+	}
+
+	int getIOCounter() {
+		return IOCounter;
+	}
+
+	int getMemoryCounter() {
+		return memoryCounter;
+	}
+
+	int getIOTime() {
+		return IOTime;
+	}
+
+	int getCPUTotalTime() {
+		return CPUTotalTime;
+	}
+
+	int getLoadedTime() {
+		return loadedTime;
+	}
+
+	int getfinishTime() {
+		return finishTime;
+	}
+
+	void setfinishTime(int finishTime) {
+		this.finishTime = finishTime;
+	}
 }

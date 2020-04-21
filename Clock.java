@@ -1,6 +1,6 @@
-//It is in MS
+//This is in MS
 public class Clock {
-    private static int Time = 0;
-    static int getTime(){ return Clock.Time; }
-    static void incTime(){ Clock.Time++; }
+    public static int currentTime = 0;
+    static int getCurrentTime() { return Clock.currentTime; }
+    static void incrementTime() { Clock.currentTime++; }
 }
